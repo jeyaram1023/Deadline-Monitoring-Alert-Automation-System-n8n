@@ -2,6 +2,16 @@
 
 ---
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Project-Verified-blue.svg?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/n8n-Automation-success?style=for-the-badge&logo=data:image/svg+xml;base64," />
+  <img src="https://img.shields.io/badge/Supabase-Connected-brightgreen?style=for-the-badge&logo=supabase" />
+  <img src="https://img.shields.io/badge/Telegram-Active-blue?style=for-the-badge&logo=telegram" />
+  <img src="https://img.shields.io/badge/License-MIT-orange?style=for-the-badge" />
+</p>
+
+---
+
 ## 🟦 1. Project Overview
 
 A smart automation system to **track user deadlines (e.g., students, employees, research team members)**, monitor real-time submissions, and **send instant Telegram alerts** when deadlines are missed.  
@@ -11,8 +21,6 @@ Leverages **n8n automation**, **Supabase** for cloud database, and a customizabl
 
 ## 🟦 2. System Architecture Diagram
 
-
-<img width="1854" height="771" alt="Screenshot 2025-11-19 214124" src="https://github.com/user-attachments/assets/0fcd7092-673d-4be3-93ae-3564101e5eb2" />
 <img width="1568" height="594" alt="Screenshot 2025-11-20 003347" src="https://github.com/user-attachments/assets/cc0b7884-f0fd-46fb-851b-4228f7f7c4ee" />
 
 
@@ -55,8 +63,9 @@ This CSV is used to load all users into your n8n Data Table. **You must create, 
 
 **Sample Table:**
 
-<img width="72" height="44" alt="Screenshot 2025-11-19 214028" src="https://github.com/user-attachments/assets/38d92fc8-ae4e-40c0-89b6-96ebd06f2e08" />
 
+<img width="1270" height="415" alt="Screenshot 2025-11-20 003507" src="https://github.com/user-attachments/assets/a54d2580-68d6-4f56-878e-afb34bf9efc0" />
+In Above repo CSV file is available
 
 **How to use in n8n:**
 1. Go to “Data Tables” in n8n.
@@ -76,6 +85,7 @@ This CSV is used to load all users into your n8n Data Table. **You must create, 
   - Add form validation if needed.
 - **Deployment:**  
   - Host via GitHub Pages, Vercel, or Netlify—just upload and deploy!
+  - [Testing site Click here to open](https://jeyaram1023.github.io/Department-News-Portal/)
 - **Internal flow:**  
   - Form POSTs directly to Supabase REST API; data saved to `submissions` table.
 
@@ -194,5 +204,20 @@ Ready to automate deadline monitoring?
 **Deploy, add users, and get started today!**
 
 ---
+---
+
+## 👨‍💻 About the Developer
+
+**Name:** Jeyaram Reddy  
+**Email:** jeyaram.reddy.ece@gmail.com  
+**GitHub:** [jeyaram1023](https://github.com/jeyaram1023)  
+**LinkedIn:** [Jeyaram B](https://www.linkedin.com/in/jeyaram-ece-reddy)  
+**Portfolio**[Click here](https://jeyaram1023.github.io/My-portfolio/).
+
+**Location:** India  
+**Status:** Open to collaboration & freelance automation gigs!
+
+---
+
 
 
