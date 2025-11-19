@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Department News Portal</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .spinner {
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white w-full max-w-lg p-8 rounded-2xl shadow-xl space-y-6">
+        <h1 class="text-3xl font-bold text-center text-gray-800">Department News Portal</h1>
+
+        <div class="space-y-5">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input type="text" id="name" placeholder="Enter your full name"
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition" />
+            </div>
+            <div>
+                <label for="source" class="block text-sm font-medium text-gray-700 mb-1">Source</label>
+                <input type="text" id="source" placeholder="Enter source"
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition" />
+            </div>
+            <div>
+                <label for="village" class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+                <input type="text" id="village" placeholder="Enter destination"
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition" />
+            </div>
+            <div>
+                <label for="datetime" class="block text-sm font-medium text-gray-700 mb-1">Date & Time (IST)</label>
+                <input type="datetime-local" id="datetime"
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition" />
+            </div>
+            <div>
+                <label for="link" class="block text-sm font-medium text-gray-700 mb-1">Optional Link <span class="text-gray-500">(Maps, Instagram, etc.)</span></label>
+                <input type="url" id="link" placeholder="https://..."
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition" />
+            </div>
+            <div>
+                <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Symbol</label>
+                <input type="text" id="stock" placeholder="e.g., AAPL, TCS, RELIANCE"
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition uppercase"
+                       oninput="this.value = this.value.toUpperCase()" />
+            </div>
+            <button id="submit-btn"
+                    class="w-full p-4 text-white font-bold rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-70 disabled:cursor-not-allowed">
+                <span class="button-text">Submit Details</span>
+                <span class="spinner-container hidden">
+                    <div class="spinner w-5 h-5 border-2 border-white inline-block"></div>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mt-4">Submission Failed</h3>
+            <p id="error-message" class="text-sm text-gray-600 mt-2">Could not submit details. Please check your input.</p>
+            <button onclick="hideError()" class="mt-6 w-full bg-red-600 text-white p-2 rounded-lg hover:bg-red-700 transition">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+            </div>
+            <h3 id="success-title" class="text-lg font-medium text-gray-900 mt-4"></h3>
+            <p class="text-sm text-gray-600 mt-2">Your details have been submitted successfully.</p>
+            <button onclick="hideSuccess()" class="mt-6 w-full bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+        if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL' || !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+            console.warn('Supabase URL and Key not set.');
+            const warningBanner = document.createElement('div');
+            warningBanner.innerHTML = '<strong>Configuration Missing:</strong> Please set Supabase URL and Key in the script.';
+            warningBanner.className = 'fixed top-0 left-0 right-0 bg-red-500 text-white p-4 text-center z-50';
+            document.body.prepend(warningBanner);
+        }
+
+        const { createClient } = supabase;
+        const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const nameInput = document.getElementById('name');
+        const sourceInput = document.getElementById('source');
+        const villageInput = document.getElementById('village');
+        const datetimeInput = document.getElementById('datetime');
+        const linkInput = document.getElementById('link');
+        const stockInput = document.getElementById('stock');
+        const submitBtn = document.getElementById('submit-btn');
+        const buttonText = submitBtn.querySelector('.button-text');
+        const spinnerContainer = submitBtn.querySelector('.spinner-container');
+
+        const errorModal = document.getElementById('error-modal');
+        const errorMessage = document.getElementById('error-message');
+        const successModal = document.getElementById('success-modal');
+        const successTitle = document.getElementById('success-title');
+
+        const nameRegex = /^[a-zA-Z\s]+$/;
+        const sourceRegex = /^[a-zA-Z0-9\s.,'-]+$/;
+        const stockRegex = /^[A-Z]+$/;
+
+        function setDefaultISTDateTime() {
+            try {
+                const now = new Date();
+                const istOffset = 330 * 60000;
+                const localOffset = now.getTimezoneOffset() * 60000;
+                const istTime = new Date(now.getTime() + localOffset + istOffset);
+
+                const year = istTime.getFullYear();
+                const month = (istTime.getMonth() + 1).toString().padStart(2, '0');
+                const day = istTime.getDate().toString().padStart(2, '0');
+                const hours = istTime.getHours().toString().padStart(2, '0');
+                const minutes = istTime.getMinutes().toString().padStart(2, '0');
+
+                datetimeInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            } catch (e) {
+                console.error("Error setting IST date:", e);
+                datetimeInput.value = new Date().toISOString().slice(0, 16);
+            }
+        }
+
+        function getFormattedISTString() {
+            try {
+                const now = new Date();
+                const options = {
+                    timeZone: 'Asia/Kolkata',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                };
+
+                const formatter = new Intl.DateTimeFormat('en-IN', options);
+                const parts = formatter.formatToParts(now);
+
+                const partMap = new Map(parts.map(p => [p.type, p.value]));
+
+                return `${partMap.get('day')}-${partMap.get('month')}-${partMap.get('year')} ${partMap.get('hour')}:${partMap.get('minute')}:${partMap.get('second')} (IST)`;
+            } catch (e) {
+                console.error("Error formatting IST string:", e);
+                return new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+            }
+        }
+
+        function showLoading(isLoading) {
+            if (isLoading) {
+                submitBtn.disabled = true;
+                buttonText.classList.add('hidden');
+                spinnerContainer.classList.remove('hidden');
+            } else {
+                submitBtn.disabled = false;
+                buttonText.classList.remove('hidden');
+                spinnerContainer.classList.add('hidden');
+            }
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorModal.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorModal.classList.add('hidden');
+        }
+
+        function showSuccess(name) {
+            successTitle.textContent = `Good Job ${name} !`;
+            successModal.classList.remove('hidden');
+        }
+
+        function hideSuccess() {
+            successModal.classList.add('hidden');
+        }
+
+        function resetForm() {
+            nameInput.value = '';
+            sourceInput.value = '';
+            villageInput.value = '';
+            linkInput.value = '';
+            stockInput.value = '';
+            setDefaultISTDateTime();
+        }
+
+        async function handleSubmit() {
+            showLoading(true);
+
+            const name = nameInput.value.trim();
+            const source = sourceInput.value.trim();
+            const village = villageInput.value.trim();
+            const datetime = datetimeInput.value;
+            const link = linkInput.value.trim();
+            const stock = stockInput.value.trim();
+
+            if (!name || !source || !village || !datetime || !stock) {
+                showError("Please fill all required fields: Name, Source, Village, Date/Time, and Stock Symbol.");
+                showLoading(false);
+                return;
+            }
+
+            if (!nameRegex.test(name)) {
+                showError("Name must contain only letters (A-Z, a-z) and spaces. No emojis or symbols.");
+                showLoading(false);
+                return;
+            }
+
+            if (!sourceRegex.test(source)) {
+                showError("Source must not contain special symbols or emojis.");
+                showLoading(false);
+                return;
+            }
+
+            if (!stockRegex.test(stock)) {
+                showError("Stock Symbol must be all capital letters (e.g., AAPL) and contain no numbers or symbols.");
+                showLoading(false);
+                return;
+            }
+
+            const submissionData = {
+                user_name: name,
+                user_source: source,
+                user_place: village,
+                stock_symbol: stock,
+                selected_time: new Date(datetime).toISOString(),
+                created_time: getFormattedISTString(),
+                reference_link: link || null,
+                submitted_by: 'Ramu'
+            };
+
+            try {
+                const { data, error } = await db
+                    .from('hotel_entries')
+                    .insert([submissionData]);
+
+                if (error) {
+                    throw error;
+                }
+
+                showLoading(false);
+                showSuccess(name); // <-- Good Job #name ! guaranteed every time
+                resetForm();
+
+            } catch (error) {
+                console.error('Supabase error:', error);
+                showError(`Submission failed: ${error.message}. Check console for details.`);
+                showLoading(false);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setDefaultISTDateTime();
+            submitBtn.addEventListener('click', handleSubmit);
+        });
+    </script>
+</body>
+</html>
