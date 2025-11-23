@@ -88,6 +88,7 @@ In Above repo CSV file is available
 - **Deployment:**  
   - Host via GitHub Pages, Vercel, or Netlify—just upload and deploy!
   - [Testing site Click here to open](https://jeyaram1023.github.io/Department-News-Portal/)
+  - [view_page](https://jeyaram1023.github.io/Department-News-Portal/view)
 - **Internal flow:**  
   - Form POSTs directly to Supabase REST API; data saved to `submissions` table.
 
